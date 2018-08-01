@@ -58,8 +58,9 @@ class WaypointUpdater(object):
     		and not self.base_waypoints is None \
     		and not self.waypoint_tree is None:
     			#Get closest waypoint
-    			closest_waypoint_idx = self.get_closest_waypoint_idx()
-    			self.publish_waypoints(closest_waypoint_idx)
+    			#closest_waypoint_idx = self.get_closest_waypoint_idx()
+    			#self.publish_waypoints_only(closest_waypoint_idx)
+    			self.publish_waypoints()
     		# Slepp for cycle time
     		rate.sleep()
 
@@ -83,17 +84,17 @@ class WaypointUpdater(object):
     		closest_idx = (closest_idx + 1) % len(self.waypoints_2d)
     	return closest_idx
 
-    def publish_waypoints_only(self, closest_idx):
+    def publish_waypoints(self):
     	final_lane = self.generate_lane()
     	self.final_waypoints_pub.publish(final_lane)
 
-    def publish_waypoints(self, closest_idx):
+    def publish_waypoints_only(self, closest_idx):
     	lane = Lane()
     	lane.header = self.base_waypoints.header
     	lane.waypoints = self.base_waypoints.waypoints[closest_idx:closest_idx + LOOKAHEAD_WPS]
     	self.final_waypoints_pub.publish(lane)
 
-    def generate_lane():
+    def generate_lane(self):
     	lane = Lane()
 
     	closest_idx = self.get_closest_waypoint_idx()
