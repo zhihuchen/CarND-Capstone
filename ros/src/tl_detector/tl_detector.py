@@ -13,7 +13,7 @@ import cv2
 import yaml
 
 STATE_COUNT_THRESHOLD = 3
-SIMULATOR_MODE = False
+SIMULATOR_MODE = True
 
 class TLDetector(object):
     def __init__(self):
@@ -54,7 +54,17 @@ class TLDetector(object):
         self.state_count = 0
         self.has_image = False
 
-        rospy.spin()
+        #rospy.spin()
+        self.loop()
+
+   
+    def loop(self):
+		# Cycle time of the module
+		rate = rospy.Rate(10)
+		while not rospy.is_shutdown():
+			self.classify_image()
+			# Slepp for cycle time
+			rate.sleep()
 
     def pose_cb(self, msg):
         self.pose = msg
@@ -70,6 +80,11 @@ class TLDetector(object):
         self.lights = msg.lights
 
     def image_cb(self, msg):
+    	self.has_image = True
+        self.camera_image = msg
+
+
+    def classify_image(self):
         """Identifies red lights in the incoming camera image and publishes the index
             of the waypoint closest to the red light's stop line to /traffic_waypoint
 
@@ -77,8 +92,7 @@ class TLDetector(object):
             msg (Image): image from car-mounted camera
 
         """
-        self.has_image = True
-        self.camera_image = msg
+
         light_wp, state = self.process_traffic_lights()
 
         '''
