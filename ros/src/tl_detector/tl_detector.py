@@ -14,10 +14,11 @@ import yaml
 
 STATE_COUNT_THRESHOLD = 2
 IMAGE_UPDATE_FACTOR = 7
-SIMULATOR_MODE = True
+SIMULATOR_MODE = False
 
 class TLDetector(object):
 	def __init__(self):
+		rospy.logerr("Initialising class here !!!")
 		rospy.init_node('tl_detector')
 
 		self.pose = None
