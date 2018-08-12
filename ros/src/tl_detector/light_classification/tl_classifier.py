@@ -1,7 +1,12 @@
+import rospy
 from styx_msgs.msg import TrafficLight
+import os
+os.environ['TF_CPP_MIN_LOG_LEVEL']='2'
 import tensorflow as tf
 import numpy as np
 import datetime
+
+DEBUG = True
 
 class TLClassifier(object):
     def __init__(self):
@@ -50,18 +55,16 @@ class TLClassifier(object):
         scores = np.squeeze(scores)
         classes = np.squeeze(classes).astype(np.int32)
 
-        print('SCORES: ', scores[0])
-        print('CLASSES: ', classes[0])
+        if DEBUG:
+            rospy.loginfo("Classification Score: %s" % scores[0])
+            rospy.loginfo("Classification Class: %s" % classes[0])
 
         if scores[0] > self.threshold:
             if classes[0] == 1:
-                print('GREEN')
                 return TrafficLight.GREEN
             elif classes[0] == 2:
-                print('RED')
                 return TrafficLight.RED
             elif classes[0] == 3:
-                print('YELLOW')
                 return TrafficLight.YELLOW
 
         return TrafficLight.UNKNOWN
