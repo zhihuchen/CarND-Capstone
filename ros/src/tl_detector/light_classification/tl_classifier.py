@@ -6,19 +6,16 @@ import datetime
 class TLClassifier(object):
     def __init__(self):
 
-        #if is_sim:
         PATH_TO_GRAPH = r'light_classification/model/ssd_sim/frozen_inference_graph.pb'
-        #else:
-        #    PATH_TO_GRAPH = r'light_classification/model/ssd_udacity/frozen_inference_graph.pb'
 
         self.graph = tf.Graph()
-        self.threshold = .5
+        self.threshold = 0.525
 
         with self.graph.as_default():
-            od_graph_def = tf.GraphDef()
+            object_detection_graph_def = tf.GraphDef()
             with tf.gfile.GFile(PATH_TO_GRAPH, 'rb') as fid:
-                od_graph_def.ParseFromString(fid.read())
-                tf.import_graph_def(od_graph_def, name='')
+                object_detection_graph_def.ParseFromString(fid.read())
+                tf.import_graph_def(object_detection_graph_def, name='')
 
             self.image_tensor = self.graph.get_tensor_by_name('image_tensor:0')
             self.boxes = self.graph.get_tensor_by_name('detection_boxes:0')
@@ -40,14 +37,14 @@ class TLClassifier(object):
 
         """
         with self.graph.as_default():
-            img_expand = np.expand_dims(image, axis=0)
-            start = datetime.datetime.now()
+            image_expand = np.expand_dims(image, axis=0)
+            start_time = datetime.datetime.now()
             (boxes, scores, classes, num_detections) = self.sess.run(
                 [self.boxes, self.scores, self.classes, self.num_detections],
-                feed_dict={self.image_tensor: img_expand})
-            end = datetime.datetime.now()
-            c = end - start
-            print(c.total_seconds())
+                feed_dict={self.image_tensor: image_expand})
+            end_time = datetime.datetime.now()
+            time_interval = end_time - start_time
+            print(time_interval.total_seconds())
 
         boxes = np.squeeze(boxes)
         scores = np.squeeze(scores)
