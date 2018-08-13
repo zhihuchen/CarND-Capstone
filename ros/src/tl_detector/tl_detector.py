@@ -13,7 +13,7 @@ import cv2
 import yaml
 
 STATE_COUNT_THRESHOLD = 2
-IMAGE_UPDATE_FACTOR = 7
+IMAGE_UPDATE_FACTOR = 8
 SIMULATOR_MODE = False
 
 class TLDetector(object):
@@ -149,6 +149,18 @@ class TLDetector(object):
 		if not tl_state == light.state and not SIMULATOR_MODE:
 			rospy.logwarn("Groundtruth traffic light dectection (%d) is different \
 						   from classfier detection (%d).", light.state, tl_state)
+		
+		if tl_state == TrafficLight.GREEN:
+			rospy.loginfo("Traffic Light Classified Color State: GREEN")
+		elif tl_state == TrafficLight.YELLOW:
+			rospy.loginfo("Traffic Light Classified Color State: YELLOW")
+		elif tl_state == TrafficLight.RED:
+			rospy.loginfo("Traffic Light Classified Color State: RED")
+		elif tl_state == TrafficLight.UNKNOWN:
+			rospy.loginfo("Traffic Light Classified Color State: UNKNOWN")
+		else:
+			rospy.logerr("Traffic light classifaction error - color is not valid.")
+
 		return tl_state
 
 	def process_traffic_lights(self):
@@ -189,8 +201,8 @@ class TLDetector(object):
 		#TODO find the closest visible traffic light (if one exists)
 
 		#if light:
-		#	state = self.get_light_state(light)
-		#	return light_wp, state
+		#   state = self.get_light_state(light)
+		#   return light_wp, state
 		#self.waypoints = None
 		#return -1, TrafficLight.UNKNOWN
 
