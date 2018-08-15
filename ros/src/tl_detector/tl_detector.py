@@ -13,7 +13,7 @@ import cv2
 import yaml
 
 STATE_COUNT_THRESHOLD = 2
-IMAGE_UPDATE_FACTOR = 7
+IMAGE_UPDATE_FACTOR = 3
 SIMULATOR_MODE = True
 
 class TLDetector(object):
@@ -57,6 +57,9 @@ class TLDetector(object):
 		self.cycle_count = IMAGE_UPDATE_FACTOR
 		rospy.spin()
 
+                self.img_cntr = -1
+
+
 	def pose_cb(self, msg):
 		self.pose = msg
 
@@ -78,7 +81,6 @@ class TLDetector(object):
 			msg (Image): image from car-mounted camera
 
 		"""
-
 		if self.cycle_count >= IMAGE_UPDATE_FACTOR:
 			self.has_image = True
 			self.camera_image = msg

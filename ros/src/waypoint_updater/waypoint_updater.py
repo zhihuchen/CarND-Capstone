@@ -52,8 +52,10 @@ class WaypointUpdater(object):
         self.loop()
 
     def loop(self):
-    	# Cycle time of the module
-    	rate = rospy.Rate(50)
+    	# Hertz rate. Set this to 20 for performance to run in the simulator, but a min or 50 for the track. 
+        HZ_VAL = 20
+    	rate = rospy.Rate(HZ_VAL)
+
     	while not rospy.is_shutdown():
     		if not self.pose is None \
     		and not self.base_waypoints is None \
