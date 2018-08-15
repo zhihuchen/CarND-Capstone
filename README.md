@@ -6,7 +6,7 @@ This is the project repo for the final project of the Udacity Self-Driving Car N
 |---|---|
 | Simon Schaubel | simon.schaubel@gmail.com |
 | Zhihu Chen | ietigerchen@gmail.com |
-| Patrick Wenzel | freakz-club@gmx.net |
+| Patrick Wenzel | whatever@junkmail.com |
 | Ciaran Murphy (team lead) | ciaranrmurphy@gmail.com |
 
 <br/>
