@@ -57,9 +57,6 @@ class TLDetector(object):
 		self.cycle_count = IMAGE_UPDATE_FACTOR
 		rospy.spin()
 
-                self.img_cntr = -1
-
-
 	def pose_cb(self, msg):
 		self.pose = msg
 
@@ -108,7 +105,6 @@ class TLDetector(object):
 		else:
 			self.upcoming_red_light_pub.publish(Int32(self.last_wp))
 		self.state_count += 1
-
 
 
 	def get_closest_waypoint(self, x, y):
