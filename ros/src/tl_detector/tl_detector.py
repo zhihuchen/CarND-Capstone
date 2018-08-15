@@ -13,7 +13,7 @@ import cv2
 import yaml
 
 STATE_COUNT_THRESHOLD = 2
-IMAGE_UPDATE_FACTOR = 7
+IMAGE_UPDATE_FACTOR = 3
 SIMULATOR_MODE = True
 
 class TLDetector(object):
@@ -78,7 +78,6 @@ class TLDetector(object):
 			msg (Image): image from car-mounted camera
 
 		"""
-
 		if self.cycle_count >= IMAGE_UPDATE_FACTOR:
 			self.has_image = True
 			self.camera_image = msg
@@ -106,7 +105,6 @@ class TLDetector(object):
 		else:
 			self.upcoming_red_light_pub.publish(Int32(self.last_wp))
 		self.state_count += 1
-
 
 
 	def get_closest_waypoint(self, x, y):
