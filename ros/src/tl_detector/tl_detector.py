@@ -13,12 +13,11 @@ import cv2
 import yaml
 
 STATE_COUNT_THRESHOLD = 2
-IMAGE_UPDATE_FACTOR = 8
-SIMULATOR_MODE = False
+IMAGE_UPDATE_FACTOR = 3
+SIMULATOR_MODE = True
 
 class TLDetector(object):
 	def __init__(self):
-		rospy.logerr("Initialising class here !!!")
 		rospy.init_node('tl_detector')
 
 		self.pose = None
@@ -79,7 +78,6 @@ class TLDetector(object):
 			msg (Image): image from car-mounted camera
 
 		"""
-
 		if self.cycle_count >= IMAGE_UPDATE_FACTOR:
 			self.has_image = True
 			self.camera_image = msg
@@ -107,7 +105,6 @@ class TLDetector(object):
 		else:
 			self.upcoming_red_light_pub.publish(Int32(self.last_wp))
 		self.state_count += 1
-
 
 
 	def get_closest_waypoint(self, x, y):
@@ -139,16 +136,15 @@ class TLDetector(object):
 			#self.last_state = None
 			rospy.loginfo("--------> Simulator Mode Activated <--------")
 			rospy.loginfo("**** Groundtruth Traffic Light State %d *****", light.state)
-			return light.state
+			tl_state = light.state
+		else:
+			cv_image = self.bridge.imgmsg_to_cv2(self.camera_image, "bgr8")
 
-		cv_image = self.bridge.imgmsg_to_cv2(self.camera_image, "bgr8")
-
-		#Get classification
-
-		tl_state = self.light_classifier.get_classification(cv_image)
-		if not tl_state == light.state and not SIMULATOR_MODE:
-			rospy.logwarn("Groundtruth traffic light dectection (%d) is different \
-						   from classfier detection (%d).", light.state, tl_state)
+			#Get classification
+			tl_state = self.light_classifier.get_classification(cv_image)
+			if not tl_state == light.state and not SIMULATOR_MODE:
+				rospy.logwarn("Groundtruth traffic light dectection (%d) is different \
+						  	 from classfier detection (%d).", light.state, tl_state)
 		
 		if tl_state == TrafficLight.GREEN:
 			rospy.loginfo("Traffic Light Classified Color State: GREEN")

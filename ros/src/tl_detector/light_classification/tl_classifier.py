@@ -4,7 +4,7 @@ import os
 os.environ['TF_CPP_MIN_LOG_LEVEL']='2'
 import tensorflow as tf
 import numpy as np
-import datetime
+from timeit import default_timer as timer
 
 DEBUG = True
 
@@ -43,13 +43,11 @@ class TLClassifier(object):
         """
         with self.graph.as_default():
             image_expand = np.expand_dims(image, axis=0)
-            start_time = datetime.datetime.now()
+            start_time = timer()
             (boxes, scores, classes, num_detections) = self.sess.run(
                 [self.boxes, self.scores, self.classes, self.num_detections],
                 feed_dict={self.image_tensor: image_expand})
-            end_time = datetime.datetime.now()
-            time_interval = end_time - start_time
-            print(time_interval.total_seconds())
+            cycle_time_classification = timer() - start_time
 
         boxes = np.squeeze(boxes)
         scores = np.squeeze(scores)
@@ -58,6 +56,7 @@ class TLClassifier(object):
         if DEBUG:
             rospy.loginfo("Classification Score: %s" % scores[0])
             rospy.loginfo("Classification Class: %s" % classes[0])
+            rospy.loginfo("Classification Time : %s" % cycle_time_classification)
 
         if scores[0] > self.threshold:
             if classes[0] == 1:
